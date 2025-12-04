@@ -1,12 +1,15 @@
 package org.eventer.entity;
 
+import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class User {
+    @Generated
     private Long id;
+
     private String userName;
     private String email;
     private String password;
