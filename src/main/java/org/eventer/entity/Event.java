@@ -1,14 +1,19 @@
 package org.eventer.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Event {
+
+    @EqualsAndHashCode.Include
     private Long id;
+
     private Long groupId;
     private String title;
     private String description;

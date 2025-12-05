@@ -1,6 +1,7 @@
 package org.eventer.repository;
 
 import org.eventer.entity.User;
+import org.eventer.exceptions.EntityNotFoundException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -108,7 +109,7 @@ public class UserRepository {
     }
 
     @Transactional
-    public Long saveUser(User user) {
+    public Long save(User user) {
         String sql = "INSERT INTO users (username,email,password,role,group_id) VALUES (?,?,?,?,?) RETURNING id";
 
         try{
@@ -124,68 +125,64 @@ public class UserRepository {
     }
 
     @Transactional
-    public int updateUserForAdmin(User user) {
-        if (user == null || user.getId() == null) {
-            throw new IllegalArgumentException("User or user_id must not be null");
-        }
-
+    public void update(Long id,User user) {
         String sql = "UPDATE users SET username=?,email=?,password=?,role=?,group_id=? WHERE id=?";
 
         try{
-            int res = jdbc.update(sql,user.getUserName(),user.getEmail(),user.getPassword(),user.getRole(),user.getGroupId(),user.getId());
+            int rowsAffected = jdbc.update(sql,user.getUserName(),user.getEmail(),user.getPassword(),user.getRole(),user.getGroupId(),id);
 
-            if(res == 0){
-                System.out.println("No user found with id " + user.getId());
+            if(rowsAffected == 0){
+                throw new EntityNotFoundException("User not found");
             }
-            return res;
+
         }catch (DataAccessException e) {
             throw new RuntimeException("Fail with updating user ",e);
         }
     }
 
     @Transactional
-    public int deleteUser(Long id) {
+    public void deleteById(Long id) {
         String sql = "DELETE FROM users WHERE id = ?";
 
         try{
-            int res = jdbc.update(sql,id);
-            if(res == 0){
-                System.out.println("No users with this id=" + id);
-            }else{
-                System.out.println("Deleted user with this id=" + id);
+            int rowsAffected = jdbc.update(sql,id);
+
+            if(rowsAffected == 0){
+                throw new EntityNotFoundException("User not found with id " + id);
             }
 
-            return res;
         }catch (DataAccessException e) {
             throw new RuntimeException("Fail with deleting user ",e);
         }
     }
 
     @Transactional
-    public int updatePassword(Long id, String newPassword) {
+    public void updatePassword(Long id, String newPassword) {
         String sql = "UPDATE users SET password=? WHERE id=?";
 
         try{
             int res = jdbc.update(sql,newPassword,id);
+
             if(res == 0){
-                System.out.println("No users with id " + id);
+                throw new EntityNotFoundException("User not found with id " + id);
             }
-            return res;
+
         }catch(DataAccessException e){
             throw new RuntimeException("Fail with updating password ",e);
         }
     }
 
-    public int updateRole(Long id, String role) {
+    @Transactional
+    public void updateRole(Long id, String role) {
         String sql = "UPDATE users SET role=? WHERE id=?";
 
         try{
-            int res = jdbc.update(sql,role,id);
-            if(res == 0){
-                System.out.println("No users with id " + id);
+            int rowsAffected = jdbc.update(sql,role,id);
+
+            if(rowsAffected == 0){
+                throw new EntityNotFoundException("User not found with id " + id);
             }
 
-            return res;
         } catch(DataAccessException e){
             throw new RuntimeException("Fail with updating role ",e);
         }

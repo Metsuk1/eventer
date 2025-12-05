@@ -1,10 +1,12 @@
 package org.eventer.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 public class Group {
     private Long id;
     private String name;
