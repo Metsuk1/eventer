@@ -1,6 +1,7 @@
 package org.eventer.repository;
 
 import org.eventer.entity.User;
+import org.eventer.exceptions.DatabaseException;
 import org.eventer.exceptions.EntityNotFoundException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -116,11 +117,11 @@ public class UserRepository {
             Long generatedId = jdbc.queryForObject(sql,Long.class,user.getUserName(),user.getEmail(),user.getPassword(),user.getRole(),user.getGroupId());
 
             if(generatedId == null){
-                throw new RuntimeException("Failed to get generated ID");
+                throw new DatabaseException("Failed to get generated ID");
             }
             return generatedId;
         } catch (DataAccessException e) {
-            throw new RuntimeException("Fail with adding user ",e);
+            throw new DatabaseException("Fail with adding user ",e);
         }
     }
 

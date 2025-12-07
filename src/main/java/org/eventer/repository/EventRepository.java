@@ -2,6 +2,7 @@ package org.eventer.repository;
 
 import org.eventer.dto.EventDto;
 import org.eventer.entity.Event;
+import org.eventer.exceptions.DatabaseException;
 import org.eventer.exceptions.EntityNotFoundException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -76,12 +77,12 @@ public class EventRepository {
             Long id = jdbc.queryForObject(sql,Long.class,event.getGroupId(),event.getTitle(),event.getDescription(),event.getStartDatetime(),event.getEndDatetime());
 
             if(id == null){
-                throw new IllegalStateException("Failed to retrieve generated id for event");
+                throw new DatabaseException("Failed to retrieve generated id for event");
             }
 
             return id;
         }catch(DataAccessException e){
-            throw new RuntimeException("failed to save event",e);
+            throw new DatabaseException("failed to save event",e);
         }
     }
 
