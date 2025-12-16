@@ -66,7 +66,7 @@ public class UserService {
     }
 
     @Transactional
-    public Long save(UserDto userDto) {
+    public UserDto create(UserDto userDto) {
         if(userDto == null){
             throw new ValidationException("UserDto cannot be null");
         }
@@ -82,7 +82,10 @@ public class UserService {
         User user = mapper.toUser(userDto);
         user.setRole(UserRole.USER.name()); // it is by default
 
-        return userRepository.save(user);
+        Long generatedId = userRepository.save(user);
+        user.setId(generatedId);
+
+        return mapper.toDto(user);
     }
 
     @Transactional
