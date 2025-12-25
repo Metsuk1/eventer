@@ -1,12 +1,17 @@
 package org.eventer.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
+
+    @EqualsAndHashCode.Include
     private Long id;
+
     private String userName;
     private String email;
     private String password;
@@ -15,6 +20,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User [id=" + id + ", userName=" + userName + ", email=" + email + ", password=" + password;
+        return "User [id=" + id + ", userName=" + userName + ", email=" + email;
     }
 }
